@@ -1,159 +1,137 @@
 #ml
-import numpy as np
-import pandas as pd
+1) import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-data = {'Area': [3100, 2700, 2600, 4000, 3300, 2100], 'Price': [6200000, 5800000, 5400000, 7500000, 6500000, 5500000]}
-df = pd.DataFrame(data)
-X = df[['Area']] 
-y = df['Price']
-model = LinearRegression()   
-model.fit(X, y)
-new_areas = np.array([3500, 5000]).reshape(-1, 1)
-new_areas_df = pd.DataFrame(new_areas, columns=['Area'])
-predicted_prices = model.predict(new_areas_df)
-for area, price in zip(new_areas.flatten(), predicted_prices):
-    print(f"Area: {area} sq.ft -> Predicted Price: Rs {price:.2f}")
-rmse = np.sqrt(mean_squared_error(y, model.predict(X)))
-r2 = r2_score(y, model.predict(X))
-print(f"\nRMSE: {rmse:.2f}, R²: {r2:.2f}")
-plt.scatter(X, y, color='blue', label='Actual Data')
-plt.plot(X, model.predict(X), color='red', label='Regression Line')
-plt.scatter(new_areas, predicted_prices, color='green', label='Predictions')
-plt.xlabel('Area (sq.ft)')
-plt.ylabel('Price (Rs)')
-plt.title('Home Prices Prediction')
+df = pd.read_csv("C:\\Users\\sumit\\Downloads\\sales.csv")
+df.head()
+plt.figure(figsize=(8, 6))
+plt.bar(df.Region,df.Sale,color=['r','g','b','y'], edgecolor='black')
+plt.title('Simple Bar Chart Example', fontsize=16)
+plt.xlabel('Categories', fontsize=14)
+plt.ylabel('Values', fontsize=14)
+plt.grid(axis='y', linestyle='-', alpha=0.7)
+plt.show()
+
+
+2) import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+df = pd.read_csv("C:\\Users\\sumit\\Downloads\\sales.csv")
+CF = df['Customer_Feedback'].value_counts()
+plt.figure(figsize=(10, 6))
+ax = sns.barplot(x=CF.index, y=CF.values, hue=CF.index, palette='viridis', dodge=False)
+leg = ax.get_legend()
+if leg:
+    leg.remove()
+plt.scatter(df['Customer_Feedback'], df['Rating'], color='red', label='Avg Satisfaction Score', zorder=5)
+plt.title('Customer Feedback Categories', fontsize=16)
+plt.xlabel('Feedback Category', fontsize=14)
+plt.ylabel('Count', fontsize=14)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.legend()
 plt.show()
 
-import pandas as pd
+
+4)import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.preprocessing import LabelEncoder
-df = pd.read_csv('https://raw.githubusercontent.com/Prof-Nirbhay/Machine-Learning/refs/heads/main/GolfPlay.csv')
-label_encoder = LabelEncoder()
-for col in df.columns:
-    df[col] = label_encoder.fit_transform(df[col])
-X, y = df.drop('PlayGolf', axis=1), df['PlayGolf']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-clf = DecisionTreeClassifier(random_state=42)
-clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-print(f'Accuracy: {accuracy_score(y_test, y_pred) * 100:.2f}%')
-print('Confusion Matrix:\n', confusion_matrix(y_test, y_pred))
-print('Classification Report:\n', classification_report(y_test, y_pred))
-plt.figure(figsize=(20, 10))
-plot_tree(clf, filled=True, feature_names=X.columns, class_names=['No', 'Yes'])
+data = pd.read_csv(r"C:\Users\sumit\
+x = np.arange(len(data['Category']))
+width = 0.35
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.bar(x - width/2, data['Provider A'], width, label='Provider A', color='skyblue', edgecolor='black')
+ax.bar(x + width/2, data['Provider B'], width, label='Provider B', color='salmon', edgecolor='black')
+ax.set_xticks(x)
+ax.set_xticklabels(data['Category'])
+ax.set_xlabel('Satisfaction Categories')
+ax.set_ylabel('Satisfaction Score (out of 10)')
+ax.set_title('Customer Satisfaction Scores by Service Provider')
+ax.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
 plt.show()
 
-import pandas as pd
+
+5)import pandas as pd
+import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.tree import plot_tree
-url = "https://raw.githubusercontent.com/Prof-Nirbhay/Machine-Learning/main/GolfPlay.csv"
-data = pd.read_csv(url)
-data = pd.get_dummies(data, drop_first=True)
-X, y = data.drop('PlayGolf_Yes', axis=1), data['PlayGolf_Yes']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
-rf_model.fit(X_train, y_train)
-y_pred = rf_model.predict(X_test)
-print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
-print("\nClassification Report:\n", classification_report(y_test, y_pred))
-print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
-plt.figure(figsize=(20, 10))
-plot_tree(rf_model.estimators_[0], feature_names=X.columns, class_names=["No", "Yes"], filled=True, rounded=True, fontsize=8)
-plt.show()
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.preprocessing import StandardScaler
-url = "https://raw.githubusercontent.com/Prof-Nirbhay/Machine-Learning/refs/heads/main/Sale_data.csv"
-df = pd.read_csv(url)
-X, y = df[['Age', 'Income', 'Purchase_History']], df['Purchase_Decision']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-scaler = StandardScaler()
-X_train_scaled, X_test_scaled = scaler.fit_transform(X_train), scaler.transform(X_test)
-knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X_train_scaled, y_train)
-y_pred = knn.predict(X_test_scaled)
-print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-print("\nClassification Report:\n", classification_report(y_test, y_pred))
-error_rate = [np.mean(KNeighborsClassifier(n_neighbors=i).fit(X_train_scaled, y_train).predict(X_test_scaled) != y_test) 
-for i in range(1, 21)]
+df = pd.read_csv(r"C:\Users\sumit\Downloads\daily_customers.csv")
 plt.figure(figsize=(8, 5))
-plt.plot(range(1, 21), error_rate, marker='o', linestyle='dashed', color='blue')
-plt.xlabel('K Value')
-plt.ylabel('Error Rate')
-plt.title('Error Rate vs. K')
+ax = sns.barplot(x='Day', y='Customers', data=df, hue='Day', palette='viridis', dodge=False)
+legend = ax.get_legend()
+if legend is not None:
+    legend.remove()
+plt.title("Daily Customer Visits")
+plt.xlabel("Day")
+plt.ylabel("Number of Customers")
+plt.xticks(rotation=45)
 plt.show()
 
-import pandas as pd
+
+6)import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
-url = "https://raw.githubusercontent.com/Prof-Nirbhay/Machine-Learning/main/logistic_data.csv"
-df = pd.read_csv(url)
-X, y = df.drop(columns=["Label"]), df["Label"]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-scaler = StandardScaler()
-X_train_scaled, X_test_scaled = scaler.fit_transform(X_train), scaler.transform(X_test)
-log_reg = LogisticRegression()
-log_reg.fit(X_train_scaled, y_train)
-y_pred = log_reg.predict(X_test_scaled)
-print("Logistic Regression Performance:\n", classification_report(y_test, y_pred))
-plt.figure(figsize=(8, 6))
-plt.scatter(X_test["Feature1"], X_test["Feature2"], c=y_test, cmap="coolwarm", edgecolors="k")
-plt.xlabel("Feature1"), plt.ylabel("Feature2")
-plt.title("Logistic Regression Model Plot")
+from sklearn.linear_model import LinearRegression
+df = pd.read_csv(r"C:\Users\sumit\Downloads\scatter_data.csv")
+model = LinearRegression().fit(df[['X1', 'X2']], df['Y'])
+x1, x2 = np.meshgrid(np.linspace(0, 10, 20), np.linspace(0, 5, 20))
+y = model.predict(np.c_[x1.ravel(), x2.ravel()]).reshape(x1.shape)
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(df['X1'], df['X2'], df['Y'], color='red')
+ax.plot_surface(x1, x2, y, alpha=0.5)
+ax.set_xlabel('X1'); ax.set_ylabel('X2'); ax.set_zlabel('Y')
+plt.title("3D Scatter with Prediction Surface")
 plt.show()
 
+
+7)import pandas as pd
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
-from sklearn.datasets import make_blobs
-from sklearn.preprocessing import StandardScaler
-X, y = make_blobs(n_samples=500, centers=4, random_state=42)
-X_scaled = StandardScaler().fit_transform(X)
-kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
-kmeans.fit(X_scaled)
-plt.figure(figsize=(8, 6))
-plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=kmeans.labels_, cmap='viridis')
-plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='red', marker='X')  # Centers
-plt.title('K-Means Clustering')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.colorbar(label='Cluster')
+import seaborn as sns
+student_data = pd.read_csv(r"C:\Users\sumit\Downloads\student_performance.csv")
+plt.figure(figsize=(6, 5))
+sns.heatmap(student_data.corr(), annot=True, cmap='coolwarm',
+linewidths=0.5)
+plt.title("Correlation Matrix of Student Performance")
 plt.show()
 
-from sklearn.datasets import fetch_california_housing
-from sklearn.linear_model import Lasso
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-data = fetch_california_housing(as_frame=True)
-X, y = data.data, data.target
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-lasso = Lasso(alpha=0.1)
-lasso.fit(X_train_scaled, y_train)
-coefficients = pd.Series(lasso.coef_, index=X.columns)
-important_features = coefficients[coefficients != 0]
-print("All Coefficients:\n", coefficients.sort_values(ascending=False))
-print("\nImportant Features:\n", important_features.sort_values(ascending=False))
+
+8)import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import networkx as nx
+df_heatmap = pd.read_csv(r"C:\Users\sumit\Downloads\heatmap_data.csv")
+G = nx.erdos_renyi_graph(10, 0.3)
+plt.figure(figsize=(6, 6))
+nx.draw(G, with_labels=True, node_color='lightblue',
+edge_color='gray')
+plt.title("Network Graph")
+plt.show()
+plt.figure(figsize=(6, 5))
+sns.heatmap(df_heatmap, annot=True, cmap='YlGnBu')
+plt.title("Heat Map")
+plt.show()
+  
+
+9)import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+data_high_dim = pd.read_csv(r"C:\Users\sumit\Downloads\high_dim_scatter.csv")
+sns.pairplot(data_high_dim)
+plt.show()
+
+
+10)import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram, linkage
+data_cluster = pd.read_csv(r"C:\Users\sumit\Downloads\cluster_data.csv")
+linked = linkage(data_cluster, 'ward')
+plt.figure(figsize=(8, 5))
+dendrogram(linked, labels=list(range(1, 11)), orientation='top')
+plt.title("Dendrogram for Cluster Analysis")
+plt.xlabel("Data Points")
+plt.ylabel("Distance")
+plt.show()
